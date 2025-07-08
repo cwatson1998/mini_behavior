@@ -17,11 +17,14 @@ from wandb.integration.sb3 import WandbCallback
 parser = argparse.ArgumentParser()
 parser.add_argument("--task", required=True, help='name of task to train on')
 parser.add_argument("--partial_obs", default=True)
+parser.add_argument("--rgb_obs", default=True) # added by chris
+parser.add_argument("--device", default="auto") # added by chris
 parser.add_argument("--room_size", type=int, default=10)
 parser.add_argument("--max_steps", type=int, default=1000)
 parser.add_argument("--total_timesteps", type=int, default=5e6)
 parser.add_argument("--dense_reward", action="store_true")
 parser.add_argument("--policy_type", default="CnnPolicy")
+
 args = parser.parse_args()
 partial_obs = args.partial_obs
 
@@ -72,9 +75,11 @@ register(
 )
 
 config = {
+    # Should config also include the observation space things?
     "policy_type": args.policy_type,
     "total_timesteps": args.total_timesteps,
     "env_name": env_name,
+    "device": args.device
 }
 
 print('init wandb')
@@ -88,13 +93,24 @@ run = wandb.init(
 
 print('make env')
 env = gym.make(env_name)
+print(env.observation_space)
+#print(type(env))
+#print(type(env.env))
+#print(type(env.env.env))
+#<class 'gymnasium.wrappers.common.OrderEnforcing'>
+#<class 'gymnasium.wrappers.common.PassiveEnvChecker'>
+#<class 'mini_behavior.envs.installing_a_printer.InstallingAPrinterEnv'>
+
 if not args.partial_obs:
+    # Added by chris
     env = MiniBHFullyObsWrapper(env)
-env = ImgObsWrapper(env)
+if args.rgb_obs:
+    env = ImgObsWrapper(env)
 
 print('begin training')
 # Policy training
-model = PPO(config["policy_type"], env, n_steps=8000, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=f"./runs/{run.id}")
+
+model = PPO(config["policy_type"], env, n_steps=8000, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=f"./runs/{run.id}", device=config["device"])
 model.learn(config["total_timesteps"], callback=WandbCallback(model_save_path=f"models/{run.id}"))
 
 if not partial_obs:
