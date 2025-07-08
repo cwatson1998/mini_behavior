@@ -1,0 +1,7 @@
+minigrid
+gymnasium
+stable-baselines3
+wandb
+tensorboard
+gym-minigrid
+-e .

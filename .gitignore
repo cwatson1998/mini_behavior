@@ -1,3 +1,9 @@
+*.gif
+*.jpg
+*.mo4
+runs/*
+wandb/*
+
 *.pyc
 *__pycache__
 *egg-info
