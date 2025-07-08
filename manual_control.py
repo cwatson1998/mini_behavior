@@ -15,6 +15,7 @@ show_furniture = False
 
 def redraw(img):
     if not args.agent_view:
+        # This seems suspicious
         env.set_render_mode('rgb_array')
         img = env.render()
 
@@ -242,7 +243,9 @@ parser.add_argument(
 args = parser.parse_args()
 
 env = gym.make(args.env)
+# Chris added the .unwrapped everywhere it appears in this file.
 env.teleop_mode()
+
 if args.save:
     # We do not support save for cartesian action space
     assert env.mode == "primitive"
