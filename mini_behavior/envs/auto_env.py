@@ -16,7 +16,7 @@ class AutoGenerateEnv(RoomGrid):
             mode='cartesian',
             scene_id='marple_0',
             initial_dict=None,
-            max_steps=1e5,
+            max_steps=int(1e5),
     ):
         self.mission = initial_dict["Grid"]["mission"]
 
@@ -38,6 +38,8 @@ class AutoGenerateEnv(RoomGrid):
         self.obj_instances = {}
 
         # generate floorplans(rooms), objects, agents
+        print("debug")
+        print(type(max_steps))
         super().__init__(mode=mode,
                          init_dict=initial_dict,
                          max_steps=max_steps,

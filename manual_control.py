@@ -16,11 +16,11 @@ show_furniture = False
 def redraw(img):
     if not args.agent_view:
         # This seems suspicious
-        env.set_render_mode('rgb_array')
+        env.get_wrapper_attr('set_render_mode')('rgb_array')
         img = env.render()
 
     window.no_closeup()
-    window.set_inventory(env)
+    window.set_inventory(env.unwrapped)
     window.show_img(img)
 
 
@@ -32,19 +32,19 @@ def render_furniture():
         img = np.copy(env.furniture_view)
 
         # i, j = env.agent.cur_pos
-        i, j = env.agent_pos
+        i, j = env.get_wrapper_attr('agent_pos')
         ymin = j * TILE_PIXELS
         ymax = (j + 1) * TILE_PIXELS
         xmin = i * TILE_PIXELS
         xmax = (i + 1) * TILE_PIXELS
 
         img[ymin:ymax, xmin:xmax, :] = GridDimension.render_agent(
-            img[ymin:ymax, xmin:xmax, :], env.agent_dir)
+            img[ymin:ymax, xmin:xmax, :], env.get_wrapper_attr('agent_dir'))
         img = env.render_furniture_states(img)
 
         window.show_img(img)
     else:
-        obs = env.gen_obs()
+        obs = env.get_wrapper_attr('gen_obs')()
         redraw(obs)
 
 
@@ -59,9 +59,10 @@ def reset():
 
     obs = env.reset()
 
-    if hasattr(env, 'mission'):
-        print('Mission: %s' % env.mission)
-        window.set_caption(env.mission)
+    if hasattr(env, 'mission') or env.has_wrapper_attr('mission'):
+        mission = env.get_wrapper_attr('mission')
+        print('Mission: %s' % mission)
+        window.set_caption(mission)
 
     redraw(obs)
 
@@ -73,26 +74,29 @@ def load():
     env.reset()
     obs = env.load_state(args.load)
 
-    if hasattr(env, 'mission'):
-        print('Mission: %s' % env.mission)
-        window.set_caption(env.mission)
+    if hasattr(env, 'mission') or env.has_wrapper_attr('mission'):
+        mission = env.get_wrapper_attr('mission')
+        print('Mission: %s' % mission)
+        window.set_caption(mission)
 
     redraw(obs)
 
 
 def step(action):
-    prev_obs = env.gen_obs()
+    prev_obs = env.get_wrapper_attr('gen_obs')()
     obs, reward, done, truncated, info = env.step(action)
 
-    print('step=%s, reward=%.2f' % (env.step_count, reward))
+    step_count = env.get_wrapper_attr('step_count')
+    print('step=%s, reward=%.2f' % (step_count, reward))
 
     if args.save:
-        all_steps[env.step_count] = (prev_obs, action)
+        all_steps[step_count] = (prev_obs, action)
 
     if done:
         print('done!')
         if args.save:
-            save_demo(all_steps, args.env, env.episode)
+            episode = env.get_wrapper_attr('episode')
+            save_demo(all_steps, args.env, episode)
         reset()
     else:
         redraw(obs)
@@ -100,8 +104,9 @@ def step(action):
 
 def switch_dim(dim):
     env.switch_dim(dim)
-    print(f'switching to dim: {env.render_dim}')
-    obs = env.gen_obs()
+    render_dim = env.get_wrapper_attr('render_dim')
+    print(f'switching to dim: {render_dim}')
+    obs = env.get_wrapper_attr('gen_obs')()
     redraw(obs)
 
 
@@ -114,13 +119,16 @@ def key_handler_cartesian(event):
         reset()
         return
     if event.key == 'left':
-        step(env.actions.left)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.left)
         return
     if event.key == 'right':
-        step(env.actions.right)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.right)
         return
     if event.key == 'up':
-        step(env.actions.forward)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.forward)
         return
     # Spacebar
     if event.key == ' ':
@@ -154,49 +162,64 @@ def key_handler_primitive(event):
         window.close()
         return
     if event.key == 'left':
-        step(env.actions.left)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.left)
         return
     if event.key == 'right':
-        step(env.actions.right)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.right)
         return
     if event.key == 'up':
-        step(env.actions.forward)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.forward)
         return
     if event.key == '0':
-        step(env.actions.pickup_0)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.pickup_0)
         return
     if event.key == '1':
-        step(env.actions.pickup_1)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.pickup_1)
         return
     if event.key == '2':
-        step(env.actions.pickup_2)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.pickup_2)
         return
     if event.key == '3':
-        step(env.actions.drop_0)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.drop_0)
         return
     if event.key == '4':
-        step(env.actions.drop_1)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.drop_1)
         return
     if event.key == '5':
-        step(env.actions.drop_2)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.drop_2)
         return
     if event.key == 't':
-        step(env.actions.toggle)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.toggle)
         return
     if event.key == 'o':
-        step(env.actions.open)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.open)
         return
     if event.key == 'c':
-        step(env.actions.close)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.close)
         return
     if event.key == 'k':
-        step(env.actions.cook)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.cook)
         return
     if event.key == 's':
-        step(env.actions.slice)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.slice)
         return
     if event.key == 'i':
-        step(env.actions.drop_in)
+        actions = env.get_wrapper_attr('actions')
+        step(actions.drop_in)
         return
     if event.key == 'pagedown':
         show_states()
@@ -244,11 +267,12 @@ args = parser.parse_args()
 
 env = gym.make(args.env)
 # Chris added the .unwrapped everywhere it appears in this file.
-env.teleop_mode()
+env.get_wrapper_attr('teleop_mode')()
 
 if args.save:
     # We do not support save for cartesian action space
-    assert env.mode == "primitive"
+    mode = env.get_wrapper_attr('mode')
+    assert mode == "primitive"
 
 all_steps = {}
 
@@ -257,9 +281,10 @@ if args.agent_view:
     env = ImgObsWrapper(env)
 
 window = Window('mini_behavior - ' + args.env)
-if env.mode == "cartesian":
+mode = env.get_wrapper_attr('mode')
+if mode == "cartesian":
     window.reg_key_handler(key_handler_cartesian)
-elif env.mode == "primitive":
+elif mode == "primitive":
     window.reg_key_handler(key_handler_primitive)
 
 if args.load is None:
