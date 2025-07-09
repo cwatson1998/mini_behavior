@@ -6,6 +6,7 @@ from minigrid.wrappers import *
 from mini_behavior.window import Window
 from mini_behavior.utils.save import get_step, save_demo
 from mini_behavior.grid import GridDimension
+from mini_behavior.utils.wrappers import MiniBHCumulativeFovWrapper
 import numpy as np
 
 # Size in pixels of a tile in the full-scale human view
@@ -247,9 +248,16 @@ parser.add_argument(
 parser.add_argument(
     '--agent_view',
     default=False,
-    help="draw the agent sees (partially observable view)",
+    help="draw the agent sees (partially observable view). Needs fixing.",
     action='store_true'
 )
+parser.add_argument(
+    '--cumulative_fov',
+    default=False,
+    help="draw everything the agent has seen (like having clairvoyant memory but limited view). Do not combine with agent_view.",
+    action='store_true'
+)
+
 # NEW
 parser.add_argument(
     "--save",
@@ -279,7 +287,11 @@ all_steps = {}
 if args.agent_view:
     env = RGBImgPartialObsWrapper(env)
     env = ImgObsWrapper(env)
-
+if args.cumulative_fov:
+    env = MiniBHCumulativeFovWrapper(env)
+print(type(env))
+print(type(env.env))
+print(type(env.env.env))
 window = Window('mini_behavior - ' + args.env)
 mode = env.get_wrapper_attr('mode')
 if mode == "cartesian":

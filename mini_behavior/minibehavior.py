@@ -67,7 +67,6 @@ class MiniBehaviorEnv(MiniGridEnv):
         tile_size=TILE_PIXELS,
         dense_reward=False,
     ):
-
         self.episode = 0
         self.teleop = False  # True only when set manually
         self.last_action = None
@@ -489,7 +488,6 @@ class MiniBehaviorEnv(MiniGridEnv):
         """
         Check if a non-empty grid position is visible to the agent
         """
-
         coordinates = self.relative_coords(x, y)
         if coordinates is None:
             return False
@@ -692,6 +690,62 @@ class MiniBehaviorEnv(MiniGridEnv):
 
     def set_render_mode(self, mode):
         self.render_mode = mode
+
+    def get_full_render(self, highlight, tile_size):
+        """
+        Override MiniGrid Env
+        Render a non-paratial observation for visualization
+        """
+        # Compute which cells are visible to the agent
+        print('debug. override called')
+        _, vis_mask = self.gen_obs_grid()
+
+        # Compute the world coordinates of the bottom-left corner
+        # of the agent's view area
+        f_vec = self.dir_vec
+        r_vec = self.right_vec
+        top_left = (
+            self.agent_pos
+            + f_vec * (self.agent_view_size - 1)
+            - r_vec * (self.agent_view_size // 2)
+        )
+
+        # Mask of which cells to highlight
+        highlight_mask = np.zeros(shape=(self.width, self.height), dtype=bool)
+
+        # For each cell in the visibility mask
+        for vis_j in range(0, self.agent_view_size):
+            for vis_i in range(0, self.agent_view_size):
+                # If this cell is not visible, don't highlight it
+                if not vis_mask[vis_i, vis_j]:
+                    continue
+
+                # Compute the world coordinates of this cell
+                abs_i, abs_j = top_left - (f_vec * vis_j) + (r_vec * vis_i)
+
+                if abs_i < 0 or abs_i >= self.width:
+                    continue
+                if abs_j < 0 or abs_j >= self.height:
+                    continue
+
+                # Mark this cell to be highlighted
+                highlight_mask[abs_i, abs_j] = True
+        
+        try:
+            np.maximum(self.cumulative_highlight_mask, highlight_mask, out=self.cumulative_highlight_mask)
+            highlight_mask = self.cumulative_highlight_mask
+        except AttributeError:
+            print("there was no self.cumulative_highligh_mask field")
+
+        # Render the whole grid
+        img = self.grid.render(
+            tile_size,
+            self.agent_pos,
+            self.agent_dir,
+            highlight_mask=highlight_mask if highlight else None,
+        )
+
+        return img
 
     def render(self):
         """

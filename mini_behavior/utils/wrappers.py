@@ -1,6 +1,8 @@
 import gymnasium as gym
 from gymnasium import spaces
 from mini_bddl import OBJECT_TO_IDX
+from typing import Any, Dict, Optional, Tuple
+import numpy as np
 
 
 class MiniBHFullyObsWrapper(gym.core.ObservationWrapper):
@@ -22,3 +24,13 @@ class MiniBHFullyObsWrapper(gym.core.ObservationWrapper):
 
 	def observation(self, obs):
 		return obs
+	
+"""This is super hacky because the actual core behavior is in MiniBehaviorGrid"""
+class MiniBHCumulativeFovWrapper(gym.core.Wrapper):
+	
+	def reset(self, *, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None) -> Tuple[Any, Dict[str, Any]]:
+		# TODO: directly accessing unwrapped is bad style.
+		self.unwrapped.cumulative_highlight_mask = np.zeros(shape=(self.get_wrapper_attr("width"), self.get_wrapper_attr("height")), dtype=bool)
+		return super().reset(seed=seed, options=options)
+	
+	
