@@ -265,11 +265,16 @@ if __name__ == '__main__':
     if args.auto_env:
         with open(args.auto_env_config, 'r') as f:
             initial_dict = json.load(f)
+            print(initial_dict.items())
             env=gym.make(args.env, initial_dict=initial_dict)
     else:
         env = gym.make(args.env)
 
-    env.teleop_mode()
+    try:
+        env.teleop_mode()
+    except AttributeError:
+        # Maybe these wrappers only allow access through gym API?
+        env.env.env.teleop_mode()
     if args.save:
         # We do not support save for cartesian action space
         assert env.mode == "primitive"
