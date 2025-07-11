@@ -116,8 +116,10 @@ class AbilityState(AbsoluteObjectState):
     def __init__(self, obj, key):
         super().__init__(obj, key)
         icon_path = os.path.join(os.path.dirname(__file__), f'../utils/state_icons/{key}.jpg')
+        self.debug_icon_path = icon_path
         self.icon = img_to_array(icon_path)
 
     def render(self, img, value=False):
+        print(f"Debug: AbilityState.render called. It uses {self.debug_icon_path}")
         color = [0, 255, 0] if value else [255, 255, 255]
         fill_coords(img, point_in_icon(img, self.icon), color)

@@ -16,7 +16,7 @@ class TwoRoomNavigationEnv(RoomGrid):
 
     def __init__(
             self,
-            max_steps=1e5,
+            max_steps=int(1e5),
     ):
         super().__init__(mode='cartesian',
                          num_objs={'ball': 1},

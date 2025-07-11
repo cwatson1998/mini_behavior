@@ -13,7 +13,7 @@ class LayingWoodFloorsEnv(RoomGrid):
             room_size=16,
             num_rows=1,
             num_cols=1,
-            max_steps=1e5,
+            max_steps=int(1e5),
     ):
         num_objs = {'plywood': 4, 'hammer': 1, 'saw': 1}
 

@@ -13,7 +13,7 @@ class WashingPotsAndPansEnv(RoomGrid):
             room_size=16,
             num_rows=1,
             num_cols=1,
-            max_steps=1e5,
+            max_steps=int(1e5),
             dense_reward=False,
     ):
         num_objs = {'teapot': 1, 'kettle': 1, 'pan': 3, 'countertop': 2, 'sink': 1, 'scrub_brush': 1, 'soap': 1, 'cabinet': 2}

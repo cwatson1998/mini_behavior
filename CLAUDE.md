@@ -1,5 +1,8 @@
 # Mini-BEHAVIOR Codebase Documentation
 
+## Note from Chris:
+We did not actually use the code that Claude wrote.
+
 ## Overview
 Mini-BEHAVIOR is a RL environment for household tasks built on top of Gymnasium. It supports both RGB and discrete observation spaces for training RL agents.
 

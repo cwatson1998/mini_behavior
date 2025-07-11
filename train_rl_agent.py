@@ -102,8 +102,9 @@ print(env.observation_space)
 #<class 'mini_behavior.envs.installing_a_printer.InstallingAPrinterEnv'>
 
 if not args.partial_obs:
-    # Added by chris
     env = MiniBHFullyObsWrapper(env)
+
+# Chris added this if statement. By default, it was always image.
 if args.rgb_obs:
     env = ImgObsWrapper(env)
 

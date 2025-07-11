@@ -11,7 +11,7 @@ class SettingUpCandlesEnv(RoomGrid):
             self,
             mode='primitive',
             room_size=16,
-            max_steps=1e5,
+            max_steps=int(1e5),
     ):
         num_objs = {'candle': 6, 'table': 2, 'box': 2}
 

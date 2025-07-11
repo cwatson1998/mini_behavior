@@ -90,7 +90,7 @@ class RoomGrid(MiniBehaviorEnv):
         room_size=10,
         num_rows=2,
         num_cols=2,
-        max_steps=1e4,
+        max_steps=int(1e4),
         see_through_walls=True,
         seed=500,
         agent_view_size=7,

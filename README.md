@@ -1,3 +1,33 @@
+# Chris dev notes
+
+## Memoryful observations
+July 9:
+In manual_control.py I added some very hacky code to let it render with a field of view that monotonically grows.
+I have not yet written any code that adjusts the observations given to the agent.
+This makes it a fully observable MDP, with easy-to-explain stochastic dynamics.
+My code is really bad- it uses a wrapper MiniBHCumulativeFovWrapper that creates a field on the unwrapped class on reset.
+I directly modified MiniBehaviorEnv (the superclass of all base envs) to add this rendering functionality if that field
+(a cumulative visibility mask) exists.
+So I need to:
+- Make it actually affect the observations (it should be most like the full obs env)
+- Make it play nicely with pixel observations
+- Make the code better organized
+
+## Small bugs
+- Mission is "default mission" for all tasks 
+- [fixed] Used 1e5 for max_steps which is float not int
+
+
+## Rendering
+By default, rendering the WorldObject states (e.g. dustyable) is turned off.
+They probably did this because it superimposes in an ugly way.
+I need to investigate what actually goes into the image observation though.
+
+## Timed specs
+I am starting this on July 10.
+I want to make it easy to define timed specs.
+
+
 # Mini-BEHAVIOR
 Link to paper: https://arxiv.org/abs/2310.01824 
 

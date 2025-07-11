@@ -3,6 +3,7 @@ from mini_behavior.rendering import *
 from mini_bddl import DEFAULT_STATES, STATE_FUNC_MAPPING, DEFAULT_ACTIONS, OBJECT_TO_IDX, IDX_TO_OBJECT, OBJECTS, ABILITIES
 from .globals import COLOR_TO_IDX, IDX_TO_COLOR, COLORS
 from .load import load_json
+from mini_behavior.states import AbilityState
 
 
 class WorldObj:
@@ -121,7 +122,7 @@ class WorldObj:
                         name = '{}/{}/{}'.format(self.name, obj_name, state)
                         val = instance.get_value(obj_instance, env)
                         states[name] = val
-        return states2
+        return states
 
     def get_ability_values(self, env):
         states = {}
@@ -165,6 +166,14 @@ class WorldObj:
         render object from icon
         """
         fill_coords(img, point_in_icon(img, self.icon), [255, 255, 255])
+        # TODO: Chris: This is where you can add in state rendering.
+        # For now I need to find out what happens in the default env with image observations.
+        # Chris is now also adding states.
+        # I see why they did not include this: if there are multiple states, they will stack on top.
+        #for state in self.states.values():
+            # Would probably be better to check for .render attribute than check class instance.
+        #    if isinstance(state, AbilityState):
+        #        state.render(img, value=state.value)
 
     def reset(self):
         self.contains = None
@@ -217,7 +226,7 @@ class FurnitureObj(WorldObj):
         render object state from icon
         """
 
-        # print("called render object state from icon")
+        print("called render object state from icon")
         if not state:
             fill_coords(img, point_in_rect(0, 0.01, 0, 1), [255, 255, 255])
             fill_coords(img, point_in_rect(0, 1, 0, 0.01), [255, 255, 255])

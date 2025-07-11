@@ -20,7 +20,7 @@ class FloorPlanEnv(MiniBehaviorEnv):
                  mode='cartesian',
                  scene_id='beechwood_0_int',
                  num_objs=None,
-                 max_steps=1e5,
+                 max_steps=int(1e5),
                  ):
 
         self.scene_id = scene_id

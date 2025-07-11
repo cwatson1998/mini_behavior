@@ -13,7 +13,7 @@ class MakingTeaEnv(RoomGrid):
             room_size=16,
             num_rows=1,
             num_cols=1,
-            max_steps=1e5,
+            max_steps=int(1e5),
     ):
         num_objs = {'teapot': 1, 'tea_bag': 1, 'lemon': 1, 'knife': 1, 'cabinet': 1, 'electric_refrigerator': 1, 'stove': 1}
 

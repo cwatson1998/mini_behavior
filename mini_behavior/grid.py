@@ -194,7 +194,7 @@ class BehaviorGrid(Grid):
         """
         Render a tile and cache the result
         """
-
+        print("debug. BehaviorGrid.render_tile called")
         # if obj is inside closed obj, don't render it
         render_objs = []
 
@@ -230,13 +230,16 @@ class BehaviorGrid(Grid):
         y_coords = [(0, half), (0, half), (half, full)] #, (half, full)]
         x_coords = [(0, half), (half, full), (0, half)] #, (half, full)]
 
+        print(f"debug: BehaviroGrid.render_tile says render_objs is {render_objs}")
         for i in range(len(render_objs)):
             obj = render_objs[i]
 
             if is_obj(obj):
+                print(f"debug. BehaviorGrid.render_tile decided that {obj} is an object.")
                 x_1, x_2 = x_coords[i]
                 y_1, y_2 = y_coords[i]
                 sub_img = img[y_1: y_2, x_1: x_2, :]
+                print(f"debug. BehaviorGrid.render_tile decided that {obj} is an object. and sub_img is from {x_1},{y_1} to {x_2},{y_2}")
                 obj.render(sub_img)
 
         if agent_dir is not None:
@@ -553,6 +556,7 @@ class GridDimension(Grid):
         Render a tile and cache the result
         """
         # assert not is_obj(obj) or state_values is not None, 'no states passed in for obj'
+        print("debug. GridDimension render_tile called")
         obj_size = int(tile_size * 7 / 8)
 
         # if obj is inside closed obj, don't render it
@@ -597,6 +601,7 @@ class GridDimension(Grid):
             cls.tile_cache[key] = img.astype(np.uint8)
 
         if is_obj(obj):
+            print("debug: chris. GridDimension.render_tile was triggered")
             img[:, obj_size:, :] = cls.render_obj_states(state_values, highlight, tile_size)
 
         return img.astype(np.uint8)

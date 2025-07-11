@@ -225,7 +225,10 @@ def key_handler_primitive(event):
     if event.key == 'pagedown':
         show_states()
         return
-
+    else:
+        print("Illegal key. No-op")
+        return
+    
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

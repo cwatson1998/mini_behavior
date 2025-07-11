@@ -11,7 +11,7 @@ class WateringHouseplantsEnv(RoomGrid):
             self,
             mode='primitive',
             room_size=16,
-            max_steps=1e5,
+            max_steps=int(1e5),
     ):
         num_objs = {'pot_plant': 3, 'sink': 1, 'table': 1, 'countertop': 1}
 

@@ -13,7 +13,7 @@ class CollectMisplacedItemsEnv(RoomGrid):
             room_size=16,
             num_rows=1,
             num_cols=1,
-            max_steps=1e5,
+            max_steps=int(1e5),
     ):
         num_objs = {'gym_shoe': 1, 'necklace': 1, 'notebook': 1, 'sock': 2, 'table': 2, 'cabinet': 1, 'sofa': 1}
 

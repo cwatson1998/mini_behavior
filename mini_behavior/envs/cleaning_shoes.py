@@ -13,7 +13,7 @@ class CleaningShoesEnv(RoomGrid):
             room_size=8,
             num_rows=1,
             num_cols=1,
-            max_steps=1e5,
+            max_steps=int(1e5),
     ):
         num_objs = {'soap': 1, 'bed': 1, 'rag': 1, 'towel': 1, 'shoe': 4, 'sink': 1}
 

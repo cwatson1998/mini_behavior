@@ -13,7 +13,7 @@ class PuttingAwayDishesAfterCleaningEnv(RoomGrid):
             room_size=16,
             num_rows=1,
             num_cols=1,
-            max_steps=1e5,
+            max_steps=int(1e5),
             dense_reward=False,
     ):
         num_objs = {'plate': 8, 'countertop': 2, 'cabinet': 1}

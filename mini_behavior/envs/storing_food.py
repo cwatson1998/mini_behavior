@@ -13,7 +13,7 @@ class StoringFoodEnv(RoomGrid):
             room_size=16,
             num_rows=1,
             num_cols=1,
-            max_steps=1e5,
+            max_steps=int(1e5),
     ):
         num_objs = {'oatmeal': 2, 'countertop': 1, 'chip': 2, 'vegetable_oil': 2,
                     'sugar': 2, 'cabinet': 1}

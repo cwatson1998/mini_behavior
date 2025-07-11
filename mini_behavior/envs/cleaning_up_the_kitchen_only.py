@@ -13,7 +13,7 @@ class CleaningUpTheKitchenOnlyEnv(RoomGrid):
             room_size=16,
             num_rows=1,
             num_cols=1,
-            max_steps=1e5,
+            max_steps=int(1e5),
     ):
         num_objs = {'bin': 1, 'soap': 1, 'cabinet': 2, 'electric_refrigerator': 1, 'rag': 1, 'dustpan': 1,
                         'broom': 1, 'blender': 1, 'sink': 1, 'casserole': 1, 'plate': 1, 'vegetable_oil': 1,

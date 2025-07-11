@@ -101,6 +101,7 @@ class MiniBehaviorEnv(MiniGridEnv):
                 if obj_type in OBJECT_CLASS.keys():
                     obj_instance = OBJECT_CLASS[obj_type](name=obj_name)
                 else:
+                    # NOTE: Chris: this is where all the WorldObj get made
                     obj_instance = WorldObj(obj_type, None, obj_name)
 
                 self.objs[obj_type].append(obj_instance)
@@ -111,6 +112,7 @@ class MiniBehaviorEnv(MiniGridEnv):
             for action_name in applicable_actions:
                 action_list.append(obj_type + "/" + action_name)
 
+        # TODO: Chris: find out why mission is always nothing.
         mission_space = MissionSpace(mission_func=self._gen_mission)
         super().__init__(
             grid_size=grid_size,
@@ -687,17 +689,22 @@ class MiniBehaviorEnv(MiniGridEnv):
                 if state.type == 'absolute':
                     state._update(self)
         self.grid.state_values = {obj: obj.get_ability_values(self) for obj in self.obj_instances.values()}
+        print(f"Debug, grid state_values:\n{self.grid.state_values.items()}")
 
     def set_render_mode(self, mode):
         self.render_mode = mode
 
-    def get_full_render(self, highlight, tile_size):
+    def get_pov_render(self, tile_size):
+        raise NotImplementedError("The original authors never did this.")
+        return super().get_pov_render(tile_size)
+
+    def get_full_render(self, highlight, tile_size, render_furniture_states=False, render_states=False):
         """
         Override MiniGrid Env
-        Render a non-paratial observation for visualization
+        Render a non-partial observation for visualization
         """
         # Compute which cells are visible to the agent
-        print('debug. override called')
+        print('debug. Chris version of. get full render called')
         _, vis_mask = self.gen_obs_grid()
 
         # Compute the world coordinates of the bottom-left corner
@@ -745,12 +752,20 @@ class MiniBehaviorEnv(MiniGridEnv):
             highlight_mask=highlight_mask if highlight else None,
         )
 
+        # I think the order matters. ALso, I think I should remove these.
+        if render_furniture_states:
+            print("debug. the flag was set in get_full_render. I don't think this is good design.")
+            img = self.render_furniture_states(img)
+        if render_states:
+            img = self.render_states(img)
+
         return img
 
     def render(self):
         """
-        Render the whole-grid human view
+        Render the whole-grid human view. Not used by RGBImgObsWrapper.
         """
+
         mode = self.render_mode
         if mode == "human" and not self.window:
             self.window = Window("mini_behavior")
@@ -760,6 +775,8 @@ class MiniBehaviorEnv(MiniGridEnv):
         img = super().render()
         self.render_mode = mode
 
+
+        # Note: Chris: odd that this is here and not in get_full_render.
         if self.render_dim is None:
             img = self.render_furniture_states(img)
         else:
@@ -775,6 +792,7 @@ class MiniBehaviorEnv(MiniGridEnv):
         return img
 
     def render_states(self, tile_size=TILE_PIXELS):
+        print("debug. MiniBehavior.render_states called.")
         pos = self.front_pos
         imgs = []
         furniture = self.grid.get_furniture(*pos)
@@ -795,6 +813,7 @@ class MiniBehaviorEnv(MiniGridEnv):
         return imgs
 
     def render_furniture_states(self, img, tile_size=TILE_PIXELS, dim=None):
+        print("debug. render_furniture_states called")
         for obj in self.obj_instances.values():
             if obj.is_furniture():
                 if dim is None or dim in obj.dims:
@@ -806,6 +825,9 @@ class MiniBehaviorEnv(MiniGridEnv):
                     sub_img = img[ymin:ymax, xmin:xmax, :]
                     state_values = obj.get_ability_values(self)
                     GridDimension.render_furniture_states(sub_img, state_values)
+                    print(f"debug. we tried to render {obj}")
+        print("debug: also rendering states as part of render furniture")
+        self.render_states(tile_size=tile_size)
         return img
 
     def switch_dim(self, dim):

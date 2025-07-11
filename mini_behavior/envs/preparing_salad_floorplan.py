@@ -14,7 +14,7 @@ class PreparingSaladFloorplanEnv(FloorPlanEnv):
             mode='cartesian',
             scene_id='rs_int',
             num_objs=None,
-            max_steps=1e5,
+            max_steps=int(1e5),
     ):
         num_objs = {'electric_refrigerator': 1, 'lettuce': 2, 'countertop': 1, 'apple': 2, 'tomato': 2,
                     'radish': 2, 'carving_knife': 1, 'plate': 2, 'cabinet': 1, 'sink': 1}

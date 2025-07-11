@@ -13,7 +13,7 @@ class SortingBooksEnv(RoomGrid):
             room_size=16,
             num_rows=1,
             num_cols=1,
-            max_steps=1e5,
+            max_steps=int(1e5),
     ):
         num_objs = {'book': 2, 'hardback': 2, 'table': 1, 'shelf': 1}
 
